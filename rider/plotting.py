@@ -21,7 +21,7 @@ def yield_route_and_color(routes):
 
 
 def make_plotter(axis_plotter_func):
-    def plotter(routes, ax=None, title=""):
+    def plotter(routes, ax=None, title="", f=None):
         if ax is None:
             f, ax = plt.subplots()
         n = len(routes)
@@ -29,7 +29,7 @@ def make_plotter(axis_plotter_func):
             col = get_color(i, n)
             axis_plotter_func(ax, r, col)
         ax.set_title(title)
-        return ax
+        return f, ax
 
     return plotter
 
@@ -47,7 +47,7 @@ plot_connections = make_plotter(segments)
 
 
 def plot_points_and_connections(routes, title="", ax=None):
-    ax = plot_points(routes, ax)
+    f, ax = plot_points(routes, ax)
     plot_connections(routes, ax)
 
 
@@ -58,6 +58,7 @@ def plot_raw_and_reduced(f1, f2, r1, r2, title="Общий заголовок"):
     plot_points_and_connections([f1, f2], ax=ax1, title="Исходные треки")
     plot_points_and_connections([r1, r2], ax=ax2, title="Упрощенные треки")
     plt.suptitle(title)
+    return fig
 
 
 def plot_two(routes, i: int, j: int, simplify_with=None, title=""):
@@ -68,8 +69,8 @@ def plot_two(routes, i: int, j: int, simplify_with=None, title=""):
     else:
         r1, r2 = f1, f2
     title = f"Поездки {i} и {j}"
-    plot_raw_and_reduced(f1, f2, r1, r2, title)
+    return plot_raw_and_reduced(f1, f2, r1, r2, title)
 
 
 def plot_one(route):
-    return plot_points([route])
+    return plot_points([route])[0]

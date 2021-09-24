@@ -60,14 +60,16 @@ def yield_jsons(directory: str):
 
 
 def trackpoints(directory: str):
+    import numpy as np
     for dict_ in yield_jsons(directory):
         for p in dict_["data"]:
             yield dict(
-                time=p[0],
-                lat=p[2],
-                lon=p[1],
-                car=dict_["info"]["car_id"],
-                ride=dict_["info"]["id"],
+                time=p["t"],
+                lat=p["y"],
+                lon=p["x"],
+                car=dict_["meta"]["external_vehicle_type_id"],
+                ride=dict_["meta"]["external_waybill_id"],
+                date=np.datetime64(dict_["meta"]["start_date"])
             )
 
 

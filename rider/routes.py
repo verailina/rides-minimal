@@ -41,8 +41,8 @@ class Route(pd.DataFrame):
 
 
 def slices(df: pd.DataFrame):
-    for k, v in df.groupby(["car", "date"]):
-        yield Trip(*k), make_route(v)
+    for k, v in df.groupby(["car"]):
+        yield Trip(v["car"].iloc[0], v["date"].iloc[0]), make_route(v)
 
 
 def get_trips_and_routes(df: pd.DataFrame) -> Tuple[List[Trip], List[Route]]:
@@ -111,10 +111,10 @@ def end_time(route):
 
 
 def quantile(xs, q):
-    """Квантиль накопленной суммы списка xs без учета повторов. 
-     
+    """Квантиль накопленной суммы списка xs без учета повторов.
+
      np.quantile дает неправильный для нас результат:
-     
+
      np.quantile(xs, 0.9) может быть равно len(xs),
      если в хвосте xs много повторов.
   """
@@ -127,9 +127,9 @@ def quantile(xs, q):
 def where(xs, q):
     i = quantile(xs, q)
     try:
-       return np.searchsorted(xs, xs[i], side="left")
+        return np.searchsorted(xs, xs[i], side="left")
     except IndexError:
-       return 0 
+        return 0
 
 
 def find_index_one(xs: List, q: float) -> int:
@@ -164,6 +164,7 @@ class Segments:
     @staticmethod
     def by_distance(n: int):
         return segments_by_distance(n)
+
     @staticmethod
     def by_time(n: int):
         return segments_by_time(n)
@@ -207,7 +208,7 @@ class Increment:
     @staticmethod
     def by_distance(step_km: float):
         return distance_increment(step_km)
-    
+
     @staticmethod
     def by_time(minutes: int):
         return time_increment(minutes)
